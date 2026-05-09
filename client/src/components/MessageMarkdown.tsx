@@ -115,12 +115,7 @@ const MessageMarkdown = memo(({ message, setPreviewForm }: Props) => {
     }
 
     return (
-        <div
-            className={`__chat-area-message ${message.role === "user"
-                ? "me"
-                : "ai"
-                }`}
-        >
+        <div className={`__chat-area-message ${message.role === "user" ? "me" : "ai"}`} >
 
             {/* markdown text */}
             {deferredText && (

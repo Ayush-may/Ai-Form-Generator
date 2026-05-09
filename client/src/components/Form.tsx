@@ -7,6 +7,7 @@ type FormType = {
     formSchema: string
 }
 
+// @ts-ignore
 enum FieldType {
     TEXT = "text",
     BUTTON = "button",
@@ -40,21 +41,19 @@ type ParseFormSchemaType = {
     ]
 }
 
-const Form = ({ formSchema }: FormType) => {
+const Form = ({ formSchema }: any) => {
     const { previewForm } = useAiChat();
 
-    // return JSON.stringify(previewForm)
-
-    // const parseFormSchema: ParseFormSchemaType = JSON.parse(formSchema)
+    // const parsedFormSchema: ParseFormSchemaType = formSchema.fields
     const parsedFormSchema = useMemo(() => {
-        if (!previewForm) return null;
+        if (!formSchema) return null;
 
         try {
-            return JSON.parse(previewForm) as ParseFormSchemaType;
+            return formSchema as ParseFormSchemaType;
         } catch {
             return null;
         }
-    }, [previewForm]);
+    }, [formSchema.fields]);
 
     if (!parsedFormSchema) {
         return

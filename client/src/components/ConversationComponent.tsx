@@ -161,15 +161,15 @@ const ConversationComponent = () => {
 
 
 
-            {
+            {/* {
                 previewForm &&
-                <>
-                    <Separator />
-                    <Panel maxSize={"60%"} className='__preview-panel'>
-                        <PreviewForm />
-                    </Panel>
-                </>
-            }
+                <> */}
+            <Separator />
+            <Panel maxSize={"60%"} className='__preview-panel'>
+                <PreviewForm />
+            </Panel>
+            {/* </>
+            } */}
 
         </Group>
     )
