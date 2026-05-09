@@ -113,9 +113,9 @@ const AiChatProvider = ({ children }: ChildrenType) => {
         // due to destructuring, and the functions within it are stable.
     ]);
 
-    if (token === null && typeof window !== 'undefined') {
-        return null;
-    }
+    // if (token === null && typeof window !== 'undefined') {
+    //     return null;
+    // }
 
     return (
         <AiChatContext.Provider value={chatValue}>
