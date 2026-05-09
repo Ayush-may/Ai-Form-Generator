@@ -155,11 +155,13 @@ body {
 }
 
 .__box {
+  font-size: 14px;
+  font-weight: 400;
   width: fit-content;
   border-radius: 16px;
   padding: 1rem;
   border: 1px solid var(--border-color);
-  color: var(--text-color);
+  color: var(--sidebar-font);
   margin: 10px 0;
   cursor: pointer;
   transition: all 200ms ease;

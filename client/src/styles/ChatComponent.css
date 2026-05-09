@@ -73,6 +73,7 @@
     font-weight: 400;
     line-height: 130%;
     padding: 20px 20px 3rem 20px;
+    color: var(--sidebar-text);
     /* padding-bottom: 3rem; */
 }
 

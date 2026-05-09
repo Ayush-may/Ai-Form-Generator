@@ -1,99 +1,139 @@
-import { memo, useEffect, useMemo, useDeferredValue } from "react"
+import { memo, useDeferredValue, useEffect, useMemo } from "react"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import Loading from "./Loading"
 import { IoIosArrowForward } from "react-icons/io"
+
 type Props = {
-  message: any
-  status: any
-  setPreviewForm: (form: string | null) => void
-}
-
-function extractForm(text: string) {
-  const start = text.indexOf("```form")
-
-  if (start === -1) {
-    return { text, form: null, loading: false }
-  }
-
-  const before = text.slice(0, start)
-
-  const end = text.indexOf("```", start + 7)
-
-  // streaming
-  if (end === -1) {
-    return {
-      text: before,
-      form: text.slice(start + 7),
-      loading: true
-    }
-  }
-
-  return {
-    text: before,
-    form: text.slice(start + 7, end),
-    loading: false
-  }
+    message: any
+    status: any
+    setPreviewForm: (form: string | null) => void
 }
 
 const MessageMarkdown = memo(({ message, setPreviewForm }: Props) => {
 
-  const text = useMemo(() => {
-    if (message.parts) {
-      return message.parts
-        .filter((p: any) => p.type === "text")
-        .map((p: any) => p.text ?? "")
-        .join("")
+    /**
+     * normal text parts
+     */
+    const textContent = useMemo(() => {
+
+        // database message
+        if (typeof message?.content === "string") {
+            return message.content
+        }
+
+        // ai-sdk streaming text
+        if (!message?.parts) return ""
+
+        return message.parts
+            .filter((p: any) => p.type === "text")
+            .map((p: any) => p.text ?? "")
+            .join("")
+
+    }, [message])
+
+    /**
+     * all tool parts
+     */
+    const toolParts = useMemo(() => {
+        if (!message?.parts) return []
+
+        return message.parts.filter(
+            (p: any) => p.type?.startsWith("tool-")
+        )
+    }, [message])
+
+    /**
+     * deferred markdown
+     */
+    const deferredText = useDeferredValue(textContent)
+
+    /**
+     * tool renderer
+     */
+    const renderTool = (tool: any, index: number) => {
+
+        const toolName = tool.type.replace("tool-", "")
+        const isLoading = tool.state !== "output-available"
+
+        /**
+         * loading UI
+         */
+        if (isLoading) {
+            return (
+                <div key={index} className="__box">
+                    <Loading text={`${toolName} is running...`} />
+                </div>
+            )
+        }
+
+        /**
+         * TOOL: createForm
+         */
+        if (toolName === "createForm") {
+
+            const form = tool?.output?.form?.form
+            const message = tool?.output?.form?.message
+
+            // preview sync
+            if (form) {
+                setPreviewForm(
+                    JSON.stringify(form, null, 2)
+                )
+            }
+
+            return (
+                <div key={index}>
+
+                    {message && (
+                        <Markdown remarkPlugins={[remarkGfm]}>
+                            {message}
+                        </Markdown>
+                    )}
+
+                    <div className="__box __box-center"
+                        onClick={() => setPreviewForm(JSON.stringify(form, null, 2))}
+                    >
+                        Click here to see preview
+                        <IoIosArrowForward />
+                    </div>
+
+                </div>
+            )
+        }
+
+        /**
+         * fallback for unknown tools
+         */
+        return (
+            <div key={index} className="__box">
+                <pre>
+                    {JSON.stringify(tool.output, null, 2)}
+                </pre>
+            </div>
+        )
     }
-    return message.content || ""
-  }, [message.parts, message.content])
 
-  const { text: markdownText, form, loading } = useMemo(() => {
-    return extractForm(text)
-  }, [text])
+    return (
+        <div
+            className={`__chat-area-message ${message.role === "user"
+                ? "me"
+                : "ai"
+                }`}
+        >
 
-  const deferredMarkdownText = useDeferredValue(markdownText)
+            {/* markdown text */}
+            {deferredText && (
+                <Markdown remarkPlugins={[remarkGfm]}>
+                    {deferredText}
+                </Markdown>
+            )}
 
-  // show form in the preview area
-  useEffect(() => {
-    if (form && !loading) {
-      setPreviewForm(form)
-    }
-  }, [form, loading])
+            {/* tools */}
+            {toolParts.map(renderTool)}
 
-  return (
-    <div className={`__chat-area-message ${message.role === "user" ? "me" : "ai"}`}>
-
-      {/* normal markdown */}
-      {deferredMarkdownText && (
-        <Markdown remarkPlugins={[remarkGfm]}>
-          {deferredMarkdownText}
-        </Markdown>
-      )}
-
-      {/* loading box */}
-      {loading && (
-        <div className="__box" >
-          <Loading text="Generating form..." />
         </div>
-      )}
-
-
-      {form && !loading && (
-        <div className="__box __box-center" >
-          Click here to see preview <IoIosArrowForward />
-        </div>
-      )}
-
-      {/* finished form */}
-      {/* {form && !loading && (
-        <Markdown remarkPlugins={[remarkGfm]}>
-          {form}
-        </Markdown>
-      )} */}
-
-    </div>
-  )
+    )
 })
 
 export default MessageMarkdown

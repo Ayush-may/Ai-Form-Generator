@@ -3,6 +3,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { generateText, streamText, type ModelMessage } from 'ai';
 import { AiChatDto } from './dto/AiChat.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { z } from "zod";
 
 @Injectable()
 export class AiService {
@@ -83,6 +84,49 @@ export class AiService {
         ]
       }
       4. Always ensure the "type" matches standard HTML input types.`,
+
+      tools: {
+        createForm: {
+          description: "Create a form",
+
+          inputSchema: z.object({
+            message: z.string(),
+
+            form: z.array(
+              z.object({
+                name: z.string(),
+
+                type: z.string(),
+
+                label: z.string().optional(),
+
+                placeholder: z.string().optional(),
+
+                required: z.boolean().optional(),
+
+                options: z.array(z.string()).optional(),
+              })
+            )
+          }),
+
+          execute: async (args) => {
+
+            console.log("TOOL CALLED");
+            console.log(args);
+
+            // artificial delay
+            await new Promise((resolve) =>
+              setTimeout(resolve, 10000)
+            )
+
+            return {
+              success: true,
+              form: args
+            };
+          }
+        }
+      },
+
       onFinish: async ({ text }) => {
 
         console.log({ text })

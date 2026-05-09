@@ -54,7 +54,11 @@ const AiChatProvider = ({ children }: ChildrenType) => {
         const last = messages[messages.length - 1];
         const textPart = last?.parts?.find(p => p.type === "text");
 
-        console.log("TEXT:", textPart?.text);
+        if (textPart?.text) {
+            console.log("TEXT:", textPart?.text);
+        } else {
+            console.log("NOTEXT:", last?.parts);
+        }
     }, [messages]);
 
     const fetchConversationByIdHistory = React.useCallback(async (conversationId: string) => {

@@ -59,7 +59,8 @@ const PreviewForm = () => {
         <div className='__preview-form' >
 
             <div className='__preview-form--body' >
-                <Form formSchema={JSON.stringify(formSchema)} />
+                {JSON.stringify(formSchema, null, 2)}
+                {/* <Form formSchema={JSON.stringify(formSchema)} /> */}
             </div>
 
             <div className='__preview-form--bottom' >

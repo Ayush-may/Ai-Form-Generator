@@ -161,7 +161,7 @@ const ConversationComponent = () => {
 
 
 
-            {/* {
+            {
                 previewForm &&
                 <>
                     <Separator />
@@ -169,7 +169,7 @@ const ConversationComponent = () => {
                         <PreviewForm />
                     </Panel>
                 </>
-            } */}
+            }
 
         </Group>
     )
