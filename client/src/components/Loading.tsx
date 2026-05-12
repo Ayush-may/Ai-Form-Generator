@@ -13,7 +13,7 @@ const Loading = memo(({ text = "Loading..." }: LoadingType) => {
                 <RiLoaderLine size={18} />
             </span>
 
-            <span className="loading-text">
+            <span className="loading-text __shine-effect">
                 {text}
             </span>
         </div>

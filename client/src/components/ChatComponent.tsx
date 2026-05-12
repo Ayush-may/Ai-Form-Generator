@@ -148,10 +148,13 @@ const ChatComponent = () => {
                             }}
                             value={inputText}
                             disabled={status === 'streaming'}
-                            className='__chat-compo-textarea'
+                            className={`__chat-compo-textarea ${inputText.split("\n").length > 1
+                                ? "expanded"
+                                : ""
+                                }`}
                             placeholder={messages.length > 0 ?
                                 `Reply` :
-                                `Ask Formiq to generate a form \nExample: Create a customer feedback form with name, email, rating and comments.`}
+                                `Ask Formiq to generate a form.`}
                         />
                         <span>
                             {status === "streaming" ?

@@ -3,6 +3,8 @@
 import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
 import React, { createContext, useEffect, useState } from "react"
+import type { FormType } from "../types/Form"
+import http from "../libs/http"
 
 type ChildrenType = {
     children: React.ReactNode
@@ -10,11 +12,11 @@ type ChildrenType = {
 
 type ValueType = {
     // states
-    previewForm: string | null
+    previewForm: FormType | null
     firstMessage: string | null
 
     // setter
-    setPreviewForm: React.Dispatch<React.SetStateAction<string | null>>
+    setPreviewForm: React.Dispatch<React.SetStateAction<FormType | null>>
     setFirstMessage: React.Dispatch<React.SetStateAction<string | null>>
 
     // helper functions
@@ -26,7 +28,7 @@ type ChatContextType = ReturnType<typeof useChat> & ValueType
 const AiChatContext = createContext<ChatContextType | null>(null)
 
 const AiChatProvider = ({ children }: ChildrenType) => {
-    const [previewForm, setPreviewForm] = useState<string | null>(null);
+    const [previewForm, setPreviewForm] = useState<FormType | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const [chatsCache, setChatsCache] = useState<{ [key: string]: any[] }>({});
     const [firstMessage, setFirstMessage] = useState<string | null>(null);
@@ -50,19 +52,19 @@ const AiChatProvider = ({ children }: ChildrenType) => {
             }
         })
     })
-    useEffect(() => {
-        const last = messages[messages.length - 1];
-        const textPart = last?.parts?.find(p => p.type === "text");
 
-        if (textPart?.text) {
-            console.log("TEXT:", textPart?.text);
-        } else {
-            console.log("NOTEXT:", last?.parts);
-        }
-    }, [messages]);
+    // useEffect(() => {
+    //     const last = messages[messages.length - 1];
+    //     const textPart = last?.parts?.find(p => p.type === "text");
+
+    //     if (textPart?.text) {
+    //         console.log("TEXT:", textPart?.text);
+    //     } else {
+    //         console.log("NOTEXT:", last?.parts);
+    //     }
+    // }, [messages]);
 
     const fetchConversationByIdHistory = React.useCallback(async (conversationId: string) => {
-        // Clear immediately to prevent UI flicker/leak
         setMessages([]);
 
         if (chatsCache[conversationId]) {
@@ -71,18 +73,27 @@ const AiChatProvider = ({ children }: ChildrenType) => {
         }
 
         try {
-            const res = await fetch(`http://localhost:8000/conversations/${conversationId}/messages`, {
+            const { data }: { data: any } = await http.get(`http://localhost:8000/conversations/${conversationId}/messages`, {
                 headers: {
-                    authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${token}`
                 }
-            });
-            const data = await res.json();
+            })
 
-            const formattedMessages = data.map((m: any) => ({
-                id: m.id,
-                role: m.role.toLowerCase(),
-                content: m.content
-            }));
+            // console.log({ data })
+
+            const formattedMessages = data
+                .filter((m: any) => m.content || m.formSnapshot)
+                .map((m: any) => ({
+                    id: m.id,
+                    role: m.role.toLowerCase(),
+                    content: m.content,
+                    formSnapshot:
+                        typeof m.formSnapshot === "string"
+                            ? JSON.parse(m.formSnapshot)
+                            : m.formSnapshot || null,
+                }));
+                
+            console.log({ formattedMessages })
 
             setChatsCache(prev => ({ ...prev, [conversationId]: formattedMessages }));
             setMessages(formattedMessages);

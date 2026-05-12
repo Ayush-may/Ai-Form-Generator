@@ -144,9 +144,7 @@ const ConversationComponent = () => {
                             value={inputText}
                             disabled={status === 'streaming'}
                             className='__chat-compo-textarea'
-                            placeholder={messages.length > 0 ?
-                                `Reply` :
-                                `Ask Formiq to generate a form \nExample: Create a customer feedback form with name, email, rating and comments.`}
+                            placeholder={`Ask Formiq to generate a form.`}
                         />
                         <span>
                             {status === "streaming" ?
@@ -161,15 +159,15 @@ const ConversationComponent = () => {
 
 
 
-            {/* {
+            {
                 previewForm &&
-                <> */}
-            <Separator />
-            <Panel maxSize={"60%"} className='__preview-panel'>
-                <PreviewForm />
-            </Panel>
-            {/* </>
-            } */}
+                <>
+                    <Separator />
+                    <Panel maxSize={"60%"} className='__preview-panel'>
+                        <PreviewForm />
+                    </Panel>
+                </>
+            }
 
         </Group>
     )

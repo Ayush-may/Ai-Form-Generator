@@ -44,19 +44,23 @@ type ParseFormSchemaType = {
 const Form = ({ formSchema }: any) => {
     const { previewForm } = useAiChat();
 
+    console.log("")
+    console.log({ previewForm })
+    console.log("")
+
     // const parsedFormSchema: ParseFormSchemaType = formSchema.fields
     const parsedFormSchema = useMemo(() => {
-        if (!formSchema) return null;
+        if (!previewForm || !previewForm?.form) return null;
 
         try {
-            return formSchema as ParseFormSchemaType;
+            return previewForm;
         } catch {
             return null;
         }
-    }, [formSchema.fields]);
+    }, [previewForm]);
 
     if (!parsedFormSchema) {
-        return
+        return <p>No Data.</p>
     }
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -80,13 +84,13 @@ const Form = ({ formSchema }: any) => {
                 <br /> */}
                 <h2>
                     <center>
-                        {parsedFormSchema.title}
+                        {parsedFormSchema?.title || "No Title"}
                     </center>
                 </h2>
             </pre>
 
             <form action="" className='__form' onSubmit={handleFormSubmit} >
-                {parsedFormSchema.fields.map(f => {
+                {(parsedFormSchema.form || [])?.map((f: any) => {
                     const type = f.type;
 
                     if (type === "text" || type === "password" || type === "checkbox" || type === "radio")
@@ -102,8 +106,8 @@ const Form = ({ formSchema }: any) => {
                                 <label htmlFor="" className='__form-label' >{f.label}</label>
                                 <select name={f.name} className="__form-input"  >
                                     {
-                                        f.options.map(option => (
-                                            <option value={option.value}>{option.label}</option>
+                                        f.options.map((option: any) => (
+                                            <option value={option}>{option}</option>
                                         ))
                                     }
                                 </select>

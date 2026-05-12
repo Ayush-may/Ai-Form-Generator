@@ -1,13 +1,14 @@
-import { memo, useDeferredValue, useEffect, useMemo } from "react"
+import React, { memo, useDeferredValue, useEffect, useMemo } from "react"
 import Markdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import Loading from "./Loading"
 import { IoIosArrowForward } from "react-icons/io"
+import type { FormType } from "../types/Form"
 
 type Props = {
     message: any
     status: any
-    setPreviewForm: (form: string | null) => void
+    setPreviewForm: React.Dispatch<React.SetStateAction<FormType | null>>
 }
 
 const MessageMarkdown = memo(({ message, setPreviewForm }: Props) => {
@@ -18,8 +19,12 @@ const MessageMarkdown = memo(({ message, setPreviewForm }: Props) => {
     const textContent = useMemo(() => {
 
         // database message
-        if (typeof message?.content === "string") {
+        if (typeof message?.content === "string" && message?.content?.trim()) {
             return message.content
+        }
+
+        if (message?.formSnapshot && typeof message?.formSnapshot === "object") {
+            return message?.formSnapshot;
         }
 
         // ai-sdk streaming text
@@ -72,14 +77,13 @@ const MessageMarkdown = memo(({ message, setPreviewForm }: Props) => {
          */
         if (toolName === "createForm") {
 
-            const form = tool?.output?.form?.form
+
+            const form: FormType = tool?.output?.form
             const message = tool?.output?.form?.message
 
             // preview sync
             if (form) {
-                setPreviewForm(
-                    JSON.stringify(form, null, 2)
-                )
+                setPreviewForm(form)
             }
 
             return (
@@ -91,10 +95,13 @@ const MessageMarkdown = memo(({ message, setPreviewForm }: Props) => {
                         </Markdown>
                     )}
 
-                    <div className="__box __box-center"
-                        onClick={() => setPreviewForm(JSON.stringify(form, null, 2))}
+                    <div
+                        className="__box __box-center "
+                        onClick={() => setPreviewForm(form)}
                     >
-                        Click here to see preview
+                        <span className="__shine-effect" >
+                            Click here to see preview
+                        </span>
                         <IoIosArrowForward />
                     </div>
 
@@ -118,10 +125,29 @@ const MessageMarkdown = memo(({ message, setPreviewForm }: Props) => {
         <div className={`__chat-area-message ${message.role === "user" ? "me" : "ai"}`} >
 
             {/* markdown text */}
-            {deferredText && (
+            {typeof deferredText === "string" && (
                 <Markdown remarkPlugins={[remarkGfm]}>
                     {deferredText}
                 </Markdown>
+            )}
+
+            {/* message showing from the chat */}
+            {typeof deferredText === "object" && (
+                <>
+                    <Markdown remarkPlugins={[remarkGfm]}>
+                        {deferredText.message}
+                    </Markdown>
+
+                    <div
+                        className="__box __box-center "
+                        onClick={() => setPreviewForm(deferredText)}
+                    >
+                        <span className="__shine-effect" >
+                            Click here to see preview
+                        </span>
+                        <IoIosArrowForward />
+                    </div>
+                </>
             )}
 
             {/* tools */}
