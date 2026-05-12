@@ -8,7 +8,63 @@ import { z } from "zod";
 @Injectable()
 export class AiService {
   MODEL_NAME = 'llama-3.3-70b-versatile';
+  SYSTEM_PROMPT = `
+You are "Form Master", a specialized AI expert in UI/UX and form generation.
+Your goal is to help users design perfect, functional web forms.
 
+BEHAVIOR RULES:
+
+1. ONLY generate a form JSON when the user explicitly asks to create/generate/build a form.
+   Examples:
+   - "Generate a registration form"
+   - "Create a contact form"
+   - "Build a job application form"
+
+2. If the user mentions form fields, requirements, or describes a form idea WITHOUT explicitly asking to generate it, DO NOT generate the form immediately.
+   Instead, respond with a friendly confirmation question like:
+   "I understand you want a form with these fields.</br></br>Should I create the form for you?"
+
+3. If the user is chatting, asking general questions, discussing UI/UX, seeking advice, requesting summaries, suggestions, or formatted text, respond normally with friendly plain text.
+
+4. ALL non-JSON text responses MUST use </br></br> between paragraphs, major points, or list items to create vertical spacing for better readability.
+
+   Example:
+   "A login form usually includes:</br></br>
+   - Email or Username</br></br>
+   - Password</br></br>
+   - Remember Me"
+
+5. When generating a form, ALWAYS return ONLY a structured JSON object in this exact format:
+{
+  "message": "A brief professional confirmation of the form created.",
+  "title": "A short form heading name.",
+  "form": [
+    {
+      "name": "field_id",
+      "type": "text|number|email|select|checkbox|radio|tel|date|password|textarea",
+      "label": "Friendly Label",
+      "placeholder": "Example value",
+      "required": true,
+      "options": ["Choice 1", "Choice 2"]
+    }
+  ]
+}
+
+6. Field Rules:
+   - Use only valid standard HTML input types.
+   - Include "options" only for select, radio, or checkbox groups.
+   - Use meaningful field IDs in snake_case.
+   - Make labels user-friendly.
+   - Set required = true only when appropriate.
+
+7. IMPORTANT RESPONSE MODES:
+   - If generating a form → return ONLY JSON (no markdown, no explanation, no extra text).
+   - If asking for confirmation → return friendly plain text with </br></br> spacing.
+   - If normal conversation → return friendly plain text with </br></br> spacing.
+
+8. Never auto-generate a form just because the user mentioned fields.
+   Always wait for explicit confirmation or a direct generate/create command.
+`
   constructor(private readonly prisma: PrismaService) { }
 
 
@@ -26,6 +82,7 @@ export class AiService {
   // async chatAi(body: AiChatDto): Promise<any> {
   async chatAi(body: any): Promise<any> {
     const { messages: incomingMessages, conversationId, userId } = body;
+    let formToolCalled = false;
 
     if (!incomingMessages?.length || !conversationId || !userId) {
       throw new BadRequestException(
@@ -69,41 +126,21 @@ export class AiService {
       model: groq(this.MODEL_NAME),
       // @ts-ignore
       messages: fullContext,
-      system: `
-      You are "Form Master", a specialized AI expert in UI/UX and form generation. 
-      Your goal is to help users create perfect, functional web forms.
-
-      BEHAVIOR RULES:
-      1. If the user asks for a form or mentions fields they want to collect, you MUST respond with a structured JSON object.
-      2. If the user is just chatting, asking a general question, or seeking advice, respond with a friendly text message.
-      3. When generating a form, use this exact structure:
-      {
-        "message": "A brief, professional confirmation of the form created.",
-        "form": [
-          { "name": "field_id", "type": "text|number|email|select|checkbox", "label": "Friendly Label", "placeholder": "Example value", "required": true, "options": ["Choice 1", "Choice 2"] }
-        ]
-      }
-      4. Always ensure the "type" matches standard HTML input types.`,
-
+      system: this.SYSTEM_PROMPT,
       tools: {
         createForm: {
           description: "Create a form",
 
           inputSchema: z.object({
             message: z.string(),
-
+            title: z.string(),
             form: z.array(
               z.object({
                 name: z.string(),
-
                 type: z.string(),
-
                 label: z.string().optional(),
-
                 placeholder: z.string().optional(),
-
                 required: z.boolean().optional(),
-
                 options: z.array(z.string()).optional(),
               })
             )
@@ -111,13 +148,24 @@ export class AiService {
 
           execute: async (args) => {
 
+            formToolCalled = true;
             console.log("TOOL CALLED");
             console.log(args);
 
+            await this.prisma.message.create({
+              data: {
+                userId,
+                conversationId,
+                role: "ASSISTANT",
+                content: "",
+                formSnapshot: JSON.stringify(args),
+              },
+            });
+
             // artificial delay
-            await new Promise((resolve) =>
-              setTimeout(resolve, 10000)
-            )
+            // await new Promise((resolve) =>
+            //   setTimeout(resolve, 10000)
+            // )
 
             return {
               success: true,
@@ -127,18 +175,22 @@ export class AiService {
         }
       },
 
-      onFinish: async ({ text }) => {
+      onFinish: async ({ text, usage }) => {
 
+        console.log("TOKENS:", usage);
         console.log({ text })
 
-        await this.prisma.message.create({
-          data: {
-            userId,
-            conversationId,
-            role: "ASSISTANT",
-            content: text,
-          },
-        });
+        if (!formToolCalled && text?.trim()) {
+          await this.prisma.message.create({
+            data: {
+              userId,
+              conversationId,
+              role: "ASSISTANT",
+              content: text,
+            },
+          });
+        }
+
       },
     });
 
