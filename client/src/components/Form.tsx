@@ -1,62 +1,13 @@
 import React, { useMemo } from 'react'
 import "../styles/Form.css"
 import { useAiChat } from "../providers/AiChatProvider"
-import Loading from "./Loading"
 
-type FormType = {
-    formSchema: string
-}
-
-// @ts-ignore
-enum FieldType {
-    TEXT = "text",
-    BUTTON = "button",
-    EMAIL = "email",
-    PASSWORD = "password",
-    TEXTAREA = "textarea",
-    DATE = "date",
-    CHECKBOX = "checkbox",
-    SELECT = "select",
-    RADIO = "radio"
-}
-
-type ParseFormSchemaType = {
-    title: string,
-    fields: [
-        {
-            type: Exclude<FieldType, FieldType.SELECT>,
-            name: string,
-            label: string,
-            placeholder: string,
-        } |
-        {
-            type: 'select',
-            name: string,
-            label: string,
-            options: [{
-                value: string,
-                label: string
-            }]
-        }
-    ]
-}
-
-const Form = ({ formSchema }: any) => {
+const Form = () => {
     const { previewForm } = useAiChat();
 
-    console.log("")
-    console.log({ previewForm })
-    console.log("")
-
-    // const parsedFormSchema: ParseFormSchemaType = formSchema.fields
     const parsedFormSchema = useMemo(() => {
         if (!previewForm || !previewForm?.form) return null;
-
-        try {
-            return previewForm;
-        } catch {
-            return null;
-        }
+        return previewForm;
     }, [previewForm]);
 
     if (!parsedFormSchema) {
@@ -67,57 +18,113 @@ const Form = ({ formSchema }: any) => {
         e.preventDefault();
 
         const form = e.currentTarget;
+
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
         const formData = new FormData(form);
 
-        console.log(Object.fromEntries(formData.entries()))
+        console.log(Object.fromEntries(formData.entries()));
+    };
 
-        // for (const [key, value] of formData.entries()) {
-        //     console.log(key, value);
-        // }
+    const renderField = (f: any) => {
+        const type = f.type;
+
+        const spanClass =
+            type === "textarea"
+                ? "__span-full"
+                : f.span === 2
+                    ? "__span-full"
+                    : "__span-half";
+
+        if (
+            ["text", "email", "password", "checkbox", "radio", "number", "tel", "date"].includes(type)
+        ) {
+            return (
+                <div
+                    key={f.name}
+                    className={`__form-field ${spanClass} ${type === "checkbox" || type === "radio" ? "__type-inline" : ""}`}
+                >
+                    <label className='__form-label'>
+                        {f.label}
+                        {f.required && <span className="__required">*</span>}
+                    </label>
+
+                    <input
+                        type={type}
+                        className='__form-input'
+                        name={f.name}
+                        placeholder={f.placeholder || ""}
+                        required={f.required}
+                    />
+                </div>
+            )
+        }
+
+        if (type === "textarea") {
+            return (
+                <div key={f.name} className={`__form-field ${spanClass}`}>
+                    <label className='__form-label'>
+                        {f.label}
+                        {f.required && <span className="__required">*</span>}
+                    </label>
+
+                    <textarea
+                        className='__form-input __form-textarea'
+                        name={f.name}
+                        placeholder={f.placeholder || ""}
+                        required={f.required}
+                    />
+                </div>
+            )
+        }
+
+        if (type === "select") {
+            return (
+                <div key={f.name} className={`__form-field ${spanClass}`}>
+                    <label className='__form-label'>
+                        {f.label}
+                        {f.required && <span className="__required">*</span>}
+                    </label>
+
+                    <select
+                        name={f.name}
+                        className="__form-input"
+                        required={f.required}
+                        defaultValue=""
+                    >
+                        <option value="" disabled>
+                            Select {f.label}
+                        </option>
+
+                        {f.options?.map((option: string) => (
+                            <option key={option} value={option}>
+                                {option}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            )
+        }
+
+        return null;
     };
 
     return (
-        <div className='__form-container' >
-            <pre style={{ whiteSpace: "collapse" }} >
-                {/* {formSchema}
-                <br />
-                <br /> */}
-                <h2>
-                    <center>
-                        {parsedFormSchema?.title || "No Title"}
-                    </center>
-                </h2>
-            </pre>
+        <div className='__form-container'>
+            <h2 className='__form-title'>
+                {parsedFormSchema.title || "No Title"}
+            </h2>
 
-            <form action="" className='__form' onSubmit={handleFormSubmit} >
-                {(parsedFormSchema.form || [])?.map((f: any) => {
-                    const type = f.type;
+            <form className='__form' onSubmit={handleFormSubmit} noValidate>
+                {(parsedFormSchema.form || []).map(renderField)}
 
-                    if (type === "text" || type === "password" || type === "checkbox" || type === "radio")
-                        return <>
-                            <div className={`__form-field ${type === "checkbox" ? "__type-radio" : ""}`} >
-                                <label htmlFor="" className='__form-label' >{f.label}</label>
-                                <input type={type} className='__form-input' name={f.name} placeholder={f.placeholder} />
-                            </div>
-                        </>
-                    else if (type === "select") {
-                        return (
-                            <div className='__form-field' >
-                                <label htmlFor="" className='__form-label' >{f.label}</label>
-                                <select name={f.name} className="__form-input"  >
-                                    {
-                                        f.options.map((option: any) => (
-                                            <option value={option}>{option}</option>
-                                        ))
-                                    }
-                                </select>
-                            </div>
-                        )
-                    }
-
-                })}
-                <div className='__form-field' >
-                    <button className='__type-button' type='submit' >Submit</button>
+                <div className='__form-field __span-full'>
+                    <button className='__type-button' type='submit'>
+                        Submit
+                    </button>
                 </div>
             </form>
         </div>

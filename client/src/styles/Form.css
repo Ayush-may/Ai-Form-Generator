@@ -1,48 +1,104 @@
 .__form-container {
-    max-width: 500px;
+    max-width: 700px;
     border: 1px solid var(--border-color);
     padding: 1rem;
     border-radius: 10px;
+    width: 100%;
+}
+
+.__form-title {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: var(--color-text);
 }
 
 .__form {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
 }
 
 .__form-field {
-    width: 100%;
-    padding: 8px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 6px;
 }
 
-.__form-field.__type-radio {
+.__span-half {
+    grid-column: span 1;
+}
+
+.__span-full {
+    grid-column: span 2;
+}
+
+.__type-inline {
     flex-direction: row;
+    align-items: center;
+    gap: 10px;
 }
 
+.__form-label {
+    color: var(--color-text);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.__required {
+    /* color: #686868; */
+    color: var(--color-text);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.__form-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    outline: none;
+    background: transparent;
+    color: var(--color-text);
+    transition: border-color 0.2s ease;
+}
+
+.__form-input:focus {
+    border-color: #4b7cff;
+}
+
+.__form-input:invalid {
+    border-color: #ff7e80;
+}
+
+.__form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
 
 .__type-button {
-    padding: 10px;
+    padding: 12px;
     border: none;
     border-radius: 8px;
     font-weight: 700;
     background-color: var(--button-secondary-bg);
     color: var(--button-secondary-text);
     cursor: pointer;
+    width: 100%;
 }
 
-.__type-button:hover {}
-
-.__form-label {
-    color: var(--color-text);
+.__type-button:hover {
+    opacity: 0.9;
 }
 
-.__form-input {
-    width: 100% !important;
-    padding: 8px;
-    border: none;
-    border-radius: 5px;
-    outline: none;
+@media (max-width: 768px) {
+    .__form {
+        grid-template-columns: 1fr;
+    }
+
+    .__span-half,
+    .__span-full {
+        grid-column: span 1;
+    }
 }

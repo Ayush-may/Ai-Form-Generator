@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "../styles/previewForm.css"
 import Form from './Form'
 import { useAiChat } from '../providers/AiChatProvider'
+import SaveFormModal from './SaveFormModal'
 
 // const formSchema = {
 //     title: "Gym Membership Form",
@@ -59,9 +60,21 @@ const formSchema = { "title": "Gym Membership Form", "fields": [{ "type": "text"
 
 const PreviewForm = () => {
     const { previewForm } = useAiChat();
+    const [isOpen, setIsOpen] = useState(false);
 
     return (
         <div className='__preview-form' >
+
+            {
+                isOpen &&
+                <SaveFormModal
+                    isOpen={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    form={previewForm}
+                    title="Save Form ?"
+                >
+                </SaveFormModal>
+            }
 
             <div className='__preview-form-header' >
                 <div className='__toggle' >
@@ -70,15 +83,15 @@ const PreviewForm = () => {
             </div>
 
             <div className='__preview-form--body' >
-                {/* <Form formSchema={formSchema} /> */}
+                {/* @ts-ignore */}
                 <Form formSchema={previewForm} />
             </div>
 
-            <div className='__preview-form--bottom' >
-                <button className='button' >Continue & Edit</button>
+            <div className='__preview-form--botton' >
+                <button className='button' onClick={() => setIsOpen(true)}>Continue & Edit</button>
             </div>
 
-        </div>
+        </div >
     )
 }
 
