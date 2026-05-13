@@ -77,14 +77,13 @@ const MessageMarkdown = memo(({ message, setPreviewForm }: Props) => {
          */
         if (toolName === "createForm") {
 
-
             const form: FormType = tool?.output?.form
             const message = tool?.output?.form?.message
 
             // preview sync
-            if (form) {
-                setPreviewForm(form)
-            }
+            // if (form) {
+            //     setPreviewForm(form)
+            // }
 
             return (
                 <div key={index}>
@@ -97,10 +96,16 @@ const MessageMarkdown = memo(({ message, setPreviewForm }: Props) => {
 
                     <div
                         className="__box __box-center "
-                        onClick={() => setPreviewForm(form)}
+                        onClick={() => {
+                            console.log({
+                                message: "inside render tool",
+                                form
+                            })
+                            setPreviewForm(form)
+                        }}
                     >
                         <span className="__shine-effect" >
-                            Click here to see preview
+                            Click here to see preview render tool
                         </span>
                         <IoIosArrowForward />
                     </div>
@@ -143,7 +148,7 @@ const MessageMarkdown = memo(({ message, setPreviewForm }: Props) => {
                         onClick={() => setPreviewForm(deferredText)}
                     >
                         <span className="__shine-effect" >
-                            Click here to see preview
+                            Click here to see preview other
                         </span>
                         <IoIosArrowForward />
                     </div>
