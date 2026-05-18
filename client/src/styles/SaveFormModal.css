@@ -147,6 +147,21 @@
     word-break: break-word;
 }
 
+.__modal-row {
+    display: flex;
+    gap: 16px;
+}
+
+.__modal-row .__modal-field {
+    flex: 1;
+}
+
+.__modal-textarea {
+    min-height: 100px;
+    resize: vertical;
+    padding-top: 12px;
+}
+
 /* animations */
 
 @keyframes fadeIn {
