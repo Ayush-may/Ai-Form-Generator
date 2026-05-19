@@ -31,7 +31,8 @@ export class AuthGuardGuard implements CanActivate {
       decoded = jwt.verify(token, key!) as { id?: string };
 
     } catch (err) {
-      console.error('JWT Verification Error:', err.message);
+      // @ts-ignore
+      console.error('JWT Verification Error:', err?.message);
       throw new UnauthorizedException('Invalid token');
     }
 

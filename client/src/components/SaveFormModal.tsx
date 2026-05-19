@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styles/SaveFormModal.css";
+import http from "../libs/http";
+import { useAiChat } from "../providers/AiChatProvider";
 
 type SavePayload = {
     formName: string;
@@ -18,9 +20,13 @@ const SaveFormModal = ({
     onSave
 }: ModalProps) => {
 
-    const [step, setStep] = useState(1);
+    const { previewForm } = useAiChat();
+    const [step, setStep] = useState(2);
     const [formName, setFormName] = useState("");
     const [slug, setSlug] = useState("");
+    const [description, setDescription] = useState("");
+    const [status, setStatus] = useState("draft");
+    const [visibility, setVisibility] = useState<"public" | "private">("public");
 
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
@@ -55,22 +61,38 @@ const SaveFormModal = ({
         setStep(2);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!formName.trim() || !slug.trim()) {
             alert("Please fill all required fields.");
             return;
         }
 
-        const payload = {
-            formName: formName.trim(),
-            slug: slug.trim().toLowerCase().replace(/\s+/g, "-")
-        };
+        try {
+            // console.log(previewForm)
+            // return
 
-        console.log("SAVE FORM:", payload);
+            const payload = {
+                name: formName.trim(),
+                description: description.trim(),
+                slug: slug.trim().toLowerCase().replace(/\s+/g, "-"),
+                schema: JSON.stringify(previewForm),
+                status,
+                visibility,
+            };
 
-        onSave?.(payload);
+            const response = await http.post("/form", payload);
 
-        handleClose();
+            console.log("FORM SAVED:", response.data);
+
+            alert("form is saved!")
+
+            // onSave?.(response.data.form);
+
+            // handleClose();
+        } catch (error) {
+            console.error(error);
+            alert("Failed to save form.");
+        }
     };
 
     if (!isOpen) return null;
@@ -124,6 +146,19 @@ const SaveFormModal = ({
 
                             <div className="__modal-field">
                                 <label className="__modal-label">
+                                    Description
+                                </label>
+
+                                <textarea
+                                    className="__modal-input __modal-textarea"
+                                    placeholder="Short description about this form..."
+                                    value={description}
+                                    onChange={(e) => setDescription(e.target.value)}
+                                />
+                            </div>
+
+                            <div className="__modal-field">
+                                <label className="__modal-label">
                                     Unique URL Name
                                 </label>
 
@@ -132,12 +167,52 @@ const SaveFormModal = ({
                                     className="__modal-input"
                                     placeholder="e.g. patient-intake-form"
                                     value={slug}
-                                    onChange={(e) => setSlug(e.target.value.replaceAll(" ", "-"))}
+                                    onChange={(e) =>
+                                        setSlug(
+                                            e.target.value
+                                                .toLowerCase()
+                                                .replaceAll(" ", "-")
+                                        )
+                                    }
                                 />
 
                                 <small className="__modal-hint">
                                     Your form URL: /forms/{slug || "your-form-name"}
                                 </small>
+                            </div>
+
+                            <div className="__modal-row">
+                                <div className="__modal-field">
+                                    <label className="__modal-label">
+                                        Status
+                                    </label>
+
+                                    <select
+                                        className="__modal-input"
+                                        value={status}
+                                        onChange={(e) => setStatus(e.target.value)}
+                                    >
+                                        <option value="draft">Draft</option>
+                                        <option value="published">Published</option>
+                                    </select>
+                                </div>
+
+                                <div className="__modal-field">
+                                    <label className="__modal-label">
+                                        Visibility
+                                    </label>
+
+                                    <select
+                                        className="__modal-input"
+                                        value={visibility}
+                                        onChange={(e) =>
+                                            setVisibility(e.target.value as "public" | "private")
+                                        }
+                                    >
+                                        <option value="public">Public</option>
+                                        <option value="private">Private</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     )}

@@ -6,14 +6,12 @@ import AuthProvider from './providers/AuthProvider.tsx'
 import { Toaster } from 'sonner'
 
 createRoot(document.getElementById('root')!).render(
-  <AuthProvider>
-    <AiChatProvider>
-      <Router />
-      <Toaster
-        position="top-right"
-        expand={false}
-        richColors={true}
-      />
-    </AiChatProvider>
-  </AuthProvider>
+  <>
+    <Router />
+    <Toaster
+      position="top-right"
+      expand={false}
+      richColors={true}
+    />
+  </>
 )
