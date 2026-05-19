@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styles/SaveFormModal.css";
 import http from "../libs/http";
+import { useAiChat } from "../providers/AiChatProvider";
 
 type SavePayload = {
     formName: string;
@@ -19,12 +20,13 @@ const SaveFormModal = ({
     onSave
 }: ModalProps) => {
 
-    const [step, setStep] = useState(1);
+    const { previewForm } = useAiChat();
+    const [step, setStep] = useState(2);
     const [formName, setFormName] = useState("");
     const [slug, setSlug] = useState("");
     const [description, setDescription] = useState("");
     const [status, setStatus] = useState("draft");
-    const [isPublic, setIsPublic] = useState(true);
+    const [visibility, setVisibility] = useState<"public" | "private">("public");
 
     useEffect(() => {
         const handleEscape = (e: KeyboardEvent) => {
@@ -66,20 +68,27 @@ const SaveFormModal = ({
         }
 
         try {
+            // console.log(previewForm)
+            // return
+
             const payload = {
                 name: formName.trim(),
                 description: description.trim(),
                 slug: slug.trim().toLowerCase().replace(/\s+/g, "-"),
-                schema: previewForm
+                schema: JSON.stringify(previewForm),
+                status,
+                visibility,
             };
 
-            const response = await http.post("/forms", payload);
+            const response = await http.post("/form", payload);
 
             console.log("FORM SAVED:", response.data);
 
-            onSave?.(response.data.form);
+            alert("form is saved!")
 
-            handleClose();
+            // onSave?.(response.data.form);
+
+            // handleClose();
         } catch (error) {
             console.error(error);
             alert("Failed to save form.");
@@ -195,9 +204,9 @@ const SaveFormModal = ({
 
                                     <select
                                         className="__modal-input"
-                                        value={isPublic ? "public" : "private"}
+                                        value={visibility}
                                         onChange={(e) =>
-                                            setIsPublic(e.target.value === "public")
+                                            setVisibility(e.target.value as "public" | "private")
                                         }
                                     >
                                         <option value="public">Public</option>
