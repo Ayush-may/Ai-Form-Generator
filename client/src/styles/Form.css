@@ -68,8 +68,12 @@
     border-color: #4b7cff;
 }
 
-.__form-input:invalid {
+/* .__form-input:invalid {
     border-color: #ff7e80;
+} */
+
+.__form-input:invalid:not(:placeholder-shown) {
+    border: 1px solid red;
 }
 
 .__form-textarea {

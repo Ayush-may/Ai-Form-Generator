@@ -9,6 +9,8 @@ import {
     FiBarChart2
 } from "react-icons/fi";
 import "../styles/FormsComponent.css";
+import http from "../libs/http";
+import { toast } from "sonner";
 
 const mockForms = [
     {
@@ -39,10 +41,11 @@ const mockForms = [
 
 function FormsComponent() {
     const [search, setSearch] = useState("");
+    const [forms, setForms] = useState<any[]>([])
     const [openMenu, setOpenMenu] = useState<number | null>(null);
 
     const filteredForms = useMemo(() => {
-        return mockForms.filter((form) =>
+        return forms.filter((form) =>
             form.name.toLowerCase().includes(search.toLowerCase())
         );
     }, [search]);
@@ -51,10 +54,22 @@ function FormsComponent() {
         const closeMenu = () => setOpenMenu(null);
         document.addEventListener("click", closeMenu);
 
+        fetchForms();
+
         return () => {
             document.removeEventListener("click", closeMenu);
         };
     }, []);
+
+    const fetchForms = async () => {
+        try {
+            const { data } = await http.get("/form");
+            setForms(data)
+            console.log(data)
+        } catch (error) {
+            toast.error("Error while fetching forms!")
+        }
+    }
 
     return (
         <div className="forms-wrapper">

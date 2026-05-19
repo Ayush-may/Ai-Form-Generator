@@ -5,6 +5,7 @@ import Conversation from "./pages/Conversation";
 import AiChatProvider from "./providers/AiChatProvider";
 import AuthProvider from "./providers/AuthProvider";
 import FormsPage from "./pages/FormsPage";
+import LiveForm from "./pages/LiveForm";
 
 const Router = () => {
     return (
@@ -17,6 +18,7 @@ const Router = () => {
                         <Route path="/c" element={<Navigate to="/" replace />} />
                         <Route path="/c/:id" element={<Conversation />} />
                         <Route path="/forms" element={<FormsPage />} />
+                        <Route path="/f/:slug" element={<LiveForm />} />
                     </Routes>
                 </AiChatProvider>
             </AuthProvider>
