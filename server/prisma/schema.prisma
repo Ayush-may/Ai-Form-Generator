@@ -78,6 +78,8 @@ model Form {
   name              String
   description       String?          @db.Text
   slug              String           @unique
+  status            String 
+  visibility        String
 
   schema            Json             // generated form fields config
   submissionsCount  Int              @default(0)
