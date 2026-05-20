@@ -11,6 +11,8 @@ import {
 import "../styles/FormsComponent.css";
 import http from "../libs/http";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
+import { BsViewList } from "react-icons/bs";
 
 const mockForms = [
     {
@@ -48,7 +50,7 @@ function FormsComponent() {
         return forms.filter((form) =>
             form.name.toLowerCase().includes(search.toLowerCase())
         );
-    }, [search]);
+    }, [search, forms]);
 
     useEffect(() => {
         const closeMenu = () => setOpenMenu(null);
@@ -65,7 +67,6 @@ function FormsComponent() {
         try {
             const { data } = await http.get("/form");
             setForms(data)
-            console.log(data)
         } catch (error) {
             toast.error("Error while fetching forms!")
         }
@@ -132,19 +133,42 @@ function FormsComponent() {
                         </div>
 
                         <p className="submission-count">
-                            {form.submissions} submissions
+                            <strong>Total Submissions:</strong> {form.submissionsCount}
+                        </p>
+
+                        <p className="submission-count">
+                            <strong>Description:</strong> {form?.description || "No Description"}
                         </p>
 
                         <div className="form-card-actions">
-                            <a
-                                href={form.liveLink}
+                            <Link
+                                to={"/f/" + form?.slug}
                                 target="_blank"
                                 rel="noreferrer"
                                 className="live-icon-btn"
                                 title="Open Live Form"
                             >
-                                <FiExternalLink size={18} />
-                            </a>
+                                <FiExternalLink size={14} />
+                            </Link>
+                            <span
+                                className="live-icon-btn"
+                                title="Copy Live Form Link"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(
+                                        `${window.location.origin}/f/${form?.slug}`
+                                    );
+                                    toast.success("Link copied!");
+                                }}
+                            >
+                                <FiCopy size={14} />
+                            </span>
+                            <button
+                                className="live-btn"
+                                title="Copy Live Form Link"
+                                onClick={() => { }}
+                            >
+                                <BsViewList size={14} /> Submission
+                            </button>
                         </div>
                     </div>
                 ))}

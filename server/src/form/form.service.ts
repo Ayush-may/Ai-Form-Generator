@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateFormDto } from './dto/create-form.dto';
 
@@ -28,6 +28,7 @@ export class FormService {
                 status: true,
                 visibility: true,
                 submissionsCount: true,
+                description: true,
             }
         })
 
@@ -45,6 +46,10 @@ export class FormService {
     }
 
     async postFormSubmission(body: any) {
+        if (!body?.slug) {
+            throw new BadRequestException("Form slug is required");
+        }
+
         const form = await this.prisma.form.findUnique({
             where: {
                 slug: body.slug
@@ -55,23 +60,24 @@ export class FormService {
             throw new NotFoundException("Form not found");
         }
 
-        await this.prisma.formSubmission.create({
-            data: {
-                formId: form.id,
-                responseData: body.responses
-            }
-        });
-
-        await this.prisma.form.update({
-            where: {
-                id: form.id
-            },
-            data: {
-                submissionsCount: {
-                    increment: 1
+        await this.prisma.$transaction([
+            this.prisma.formSubmission.create({
+                data: {
+                    formId: form.id,
+                    responseData: body.responses
                 }
-            }
-        });
+            }),
+            this.prisma.form.update({
+                where: {
+                    id: form.id
+                },
+                data: {
+                    submissionsCount: {
+                        increment: 1
+                    }
+                }
+            })
+        ]);
 
         return {
             message: "Submission saved successfully"

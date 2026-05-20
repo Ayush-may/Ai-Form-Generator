@@ -22,26 +22,24 @@ const LiveFormComponent = ({ form, formId }: {
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        const form = e.currentTarget;
+        const formElement = e.currentTarget;
 
-        console.log(form)
-
-        if (!form.checkValidity()) {
-            form.reportValidity();
+        if (!formElement.checkValidity()) {
+            formElement.reportValidity();
             return;
         }
 
-        const formData = new FormData(form);
-
+        const formData = new FormData(formElement);
 
         const payload = {
-            slug: form?.slug,
+            slug: form.slug,
             responses: Object.fromEntries(formData.entries())
         };
 
         try {
             const { data } = await http.post('/form/submission', payload);
             toast.success(data?.message || "Form Data is saved!");
+            formElement.reset();
         } catch (error) {
             toast.error("Unable to save!");
         }

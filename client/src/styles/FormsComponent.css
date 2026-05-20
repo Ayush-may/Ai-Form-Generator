@@ -1,7 +1,7 @@
 .forms-wrapper {
-    padding: 28px;
     width: 100%;
     min-height: 100%;
+    padding: 28px;
 }
 
 .forms-header {
@@ -11,16 +11,17 @@
     margin-bottom: 28px;
 }
 
+/* Search */
 .search-box {
     width: 350px;
     height: 46px;
-    border: 1px solid var(--border-color);
-    background: var(--card-bg);
-    border-radius: 14px;
     display: flex;
     align-items: center;
     gap: 10px;
     padding: 0 14px;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: var(--card-bg);
     color: var(--sidebar-font);
 }
 
@@ -29,7 +30,7 @@
     border: none;
     outline: none;
     background: transparent;
-    color: var(--sidebar-font);
+    color: inherit;
     font-size: 14px;
 }
 
@@ -37,17 +38,19 @@
     color: #9ca3af;
 }
 
+/* Grid */
 .forms-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
 }
 
+/* Card */
 .form-card {
-    background: var(--card-bg);
+    padding: 18px;
     border: 1px solid var(--border-color);
     border-radius: 18px;
-    padding: 18px;
+    background: var(--card-bg);
     transition: all 0.2s ease;
 }
 
@@ -66,22 +69,8 @@
 .form-card-top h3 {
     font-size: 16px;
     font-weight: 600;
-    color: var(--sidebar-font);
     line-height: 1.4;
-}
-
-.menu-btn {
-    border: none;
-    background: transparent;
-    cursor: pointer;
     color: var(--sidebar-font);
-    padding: 6px;
-    border-radius: 8px;
-    transition: 0.2s ease;
-}
-
-.menu-btn:hover {
-    background: var(--hover-bg);
 }
 
 .submission-count {
@@ -90,61 +79,69 @@
     color: #9ca3af;
 }
 
-.form-card-actions {
-    margin-top: 20px;
-}
-
-.live-btn {
-    width: fit-content;
-    text-decoration: none;
-    background: var(--button-bg);
-    color: var(--button-text);
-    border-radius: 10px;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    transition: 0.2s ease;
-}
-
-.live-btn:hover {
-    background: var(--button-hover-bg);
-}
-
-.empty-state {
-    margin-top: 80px;
-    text-align: center;
-    font-size: 16px;
-    color: #9ca3af;
-}
-
-.menu-wrapper {
-    position: relative;
-}
-
+/* Actions */
 .form-card-actions {
     margin-top: 18px;
     display: flex;
     justify-content: flex-end;
+    gap: 10px;
 }
 
+.live-btn,
 .live-icon-btn {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: var(--button-bg);
-    color: var(--button-text);
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
+    background: var(--button-text);
+    color: var(--bg-color);
     transition: 0.2s ease;
 }
 
+.live-btn {
+    gap: 8px;
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 14px;
+    width: fit-content;
+    cursor: pointer;
+}
+
+.live-icon-btn {
+    /* width: 14px;
+    height: 14px; */
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.live-btn:hover,
 .live-icon-btn:hover {
-    background: var(--button-hover-bg);
+    /* background: var(--button-hover-bg); */
+}
+
+.live-btn:hover,
+.live-icon-btn:hover {
     transform: scale(1.08);
+}
+
+/* Menu */
+.menu-wrapper {
+    position: relative;
+}
+
+.menu-btn {
+    padding: 6px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--sidebar-font);
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.menu-btn:hover {
+    background: var(--hover-bg);
 }
 
 .dropdown-menu {
@@ -152,27 +149,27 @@
     top: 42px;
     right: 0;
     width: 190px;
-    background: var(--card-bg);
+    padding: 8px;
     border: 1px solid var(--border-color);
     border-radius: 14px;
-    padding: 8px;
-    z-index: 100;
+    background: var(--card-bg);
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    z-index: 100;
     animation: fadeMenu 0.15s ease;
 }
 
 .dropdown-menu button {
     width: 100%;
-    border: none;
-    background: transparent;
-    padding: 12px;
-    border-radius: 10px;
-    cursor: pointer;
+    padding: 10px;
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 14px;
+    border: none;
+    border-radius: 10px;
+    background: transparent;
     color: var(--sidebar-font);
+    font-size: 14px;
+    cursor: pointer;
     transition: 0.2s ease;
 }
 
@@ -182,6 +179,14 @@
 
 .delete-option {
     color: #ef4444 !important;
+}
+
+/* Empty state */
+.empty-state {
+    margin-top: 80px;
+    text-align: center;
+    font-size: 16px;
+    color: #9ca3af;
 }
 
 @keyframes fadeMenu {

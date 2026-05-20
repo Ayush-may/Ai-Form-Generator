@@ -5,6 +5,7 @@ import Conversation from "./pages/Conversation";
 import { useAuth } from "./providers/AuthProvider";
 import FormsPage from "./pages/FormsPage";
 import LiveForm from "./pages/LiveForm";
+import SubmissionsPage from "./pages/SubmissionsPage";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
     const { token } = useAuth();
@@ -47,6 +48,14 @@ const Router = () => {
                 element={
                     <PrivateRoute>
                         <FormsPage />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/submissions"
+                element={
+                    <PrivateRoute>
+                        <SubmissionsPage />
                     </PrivateRoute>
                 }
             />

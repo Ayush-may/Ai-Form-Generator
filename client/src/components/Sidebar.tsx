@@ -87,8 +87,8 @@ const Sidebar = ({ toggleSide, setToggleSide }: SidebarProp) => {
                             </Link>
                         </li>
                         {/* <li>
-                            <Link to={"/generate-form"} className={getActiveClass(pathname === "/generate-form")} >
-                                <BiPaperclip className="icon" />
+                            <Link to={"/submissions"} className={getActiveClass(pathname === "/submission")} >
+                                <CgFormatBold className="icon" />
                                 {printValue("Submissions")}
                             </Link>
                         </li> */}
