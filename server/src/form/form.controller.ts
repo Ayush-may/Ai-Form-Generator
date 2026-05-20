@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { FormService } from './form.service';
 import { CreateFormDto } from './dto/create-form.dto';
 import { AuthGuardGuard } from 'src/auth-guard/auth-guard.guard';
@@ -7,11 +7,19 @@ import { AuthGuardGuard } from 'src/auth-guard/auth-guard.guard';
 export class FormController {
   constructor(private readonly formService: FormService) { }
 
-  @Get(":slug")
-  async getFormLive() { }
+  @Get("")
+  @UseGuards(AuthGuardGuard)
+  async getForm(
+    @Req() req: any
+  ) {
+    return this.formService.getForm(req?.userId);
+  }
 
-  @Get("id/:id")
-  async getSingleForm() { }
+  @Get("slug/:slug")
+  @UseGuards(AuthGuardGuard)
+  getBySlug(@Param("slug") slug: string) {
+    return this.formService.getBySlug(slug);
+  }
 
   @Post()
   @UseGuards(AuthGuardGuard)
@@ -21,6 +29,13 @@ export class FormController {
   ) {
     const userId = req?.userId;
     return this.formService.postForm(userId, body);
+  }
+  
+  @Post("submission")
+  async postFormSubmission(
+    @Body() body: any
+  ) {
+    return this.formService.postFormSubmission(body);
   }
 
 }
