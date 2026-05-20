@@ -12,12 +12,14 @@ type ModalProps = {
     isOpen: boolean;
     onClose: () => void;
     onSave?: (data: SavePayload) => void;
+    title: string,
 };
 
 const SaveFormModal = ({
     isOpen,
     onClose,
-    onSave
+    onSave,
+    title,
 }: ModalProps) => {
 
     const { previewForm } = useAiChat();

@@ -66,7 +66,7 @@ const LiveForm = () => {
             <div className='__right-side' >
                 {
                     // form?.schema && <LiveFormComponent previewForm={form?.schema} />
-                    form && <LiveFormComponent form={form} />
+                    form && <LiveFormComponent form={form} formId={form?.id} />
                 }
             </div>
         </div>

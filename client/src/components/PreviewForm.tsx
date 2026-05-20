@@ -70,7 +70,6 @@ const PreviewForm = () => {
                 <SaveFormModal
                     isOpen={isOpen}
                     onClose={() => setIsOpen(false)}
-                    form={previewForm}
                     title="Save Form ?"
                 >
                 </SaveFormModal>
