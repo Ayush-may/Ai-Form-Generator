@@ -13,6 +13,7 @@ import http from "../libs/http";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 import { BsViewList } from "react-icons/bs";
+import Breadcrumb from "./Breadcrumb";
 
 const mockForms = [
     {
@@ -84,8 +85,15 @@ function FormsComponent() {
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
-            </div>
 
+            </div>
+            <Breadcrumb
+                items={[
+                    { label: "Home", href: "/" },
+                    { label: "My Forms", href: "/forms" },
+                    { label: "Edit Form" }
+                ]}
+            />
             <div className="forms-grid">
                 {filteredForms.map((form) => (
                     <div key={form.id} className="form-card">
@@ -118,10 +126,10 @@ function FormsComponent() {
                                             View Responses
                                         </button>
 
-                                        <button>
+                                        {/* <button>
                                             <FiCopy />
                                             Duplicate
-                                        </button>
+                                        </button> */}
 
                                         <button className="delete-option">
                                             <FiTrash2 />
