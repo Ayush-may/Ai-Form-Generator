@@ -83,4 +83,29 @@ export class FormService {
             message: "Submission saved successfully"
         };
     }
+
+    async getFormSubmissions(userId: string, formId: string) {
+        const form = await this.prisma.form.findFirst({
+            where: {
+                id: formId,
+                userId: userId,
+            },
+            select: {
+                id: true,
+                name: true,
+                schema: true,
+                submissions: {
+                    orderBy: {
+                        createdAt: "desc",
+                    },
+                },
+            },
+        });
+
+        if (!form) {
+            throw new NotFoundException("Form not found or access denied");
+        }
+
+        return form;
+    }
 }

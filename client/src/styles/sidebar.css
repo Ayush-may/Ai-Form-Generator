@@ -55,6 +55,10 @@
     position: relative;
 }
 
+.side-header-image {
+    cursor: pointer;
+}
+
 .side-header-icon {
     position: absolute;
     right: 10px;

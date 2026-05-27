@@ -105,7 +105,7 @@ const MessageMarkdown = memo(({ message, setPreviewForm }: Props) => {
                         }}
                     >
                         <span className="__shine-effect" >
-                            Click here to see preview render tool
+                            Click here to see preview
                         </span>
                         <IoIosArrowForward />
                     </div>

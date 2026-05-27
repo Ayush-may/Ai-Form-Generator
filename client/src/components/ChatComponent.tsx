@@ -168,7 +168,8 @@ const ChatComponent = () => {
             </Panel>
 
 
-
+            {/* 
+            //  we dont need this but still im leaving this here.
             {
                 previewForm &&
                 <>
@@ -177,7 +178,7 @@ const ChatComponent = () => {
                         <PreviewForm />
                     </Panel>
                 </>
-            }
+            } */}
 
         </Group>
     )
