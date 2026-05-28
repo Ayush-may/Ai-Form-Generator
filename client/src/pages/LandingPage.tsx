@@ -32,6 +32,13 @@ const LandingPage = () => {
                     </p>
                     <button className="__generate-now-btn" >Generate Now</button>
                 </div>
+
+                <div className="__floating-card-1" >
+                    <div className="floating-relative" >
+                        <div className="floating-body" ></div>
+                    </div>
+                </div>
+
                 <div className="__big-circle" ></div>
             </section>
 

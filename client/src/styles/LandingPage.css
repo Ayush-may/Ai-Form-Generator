@@ -19,14 +19,12 @@ nav {
     justify-content: space-between;
     align-items: center;
 
-    background-color: var(--text-color);
+    /* background-color: var(--text-color); */
+    background-color: var(--sidebar-bg);
     border-radius: 999px;
 
-    border: 1px solid rgba(220, 220, 220, 0.8);
-
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.08),
-        0 2px 8px rgba(0, 0, 0, 0.04);
+    /* add glow background here */
+    box-shadow: 0 0 20px rgba(170, 170, 170, 0.15);
 
     z-index: 1000;
 }
@@ -41,8 +39,9 @@ nav button {
     border: none;
     outline: none;
     padding: 10px;
-    color: var(--text-color);
-    background-color: black;
+    color: white;
+    /* background-color: black; */
+    background-color: transparent;
     border-radius: 50px;
     transition: all 200ms ease-in-out;
     cursor: pointer;
@@ -172,4 +171,27 @@ nav button:hover {
         transform: translateX(-50%) translateY(0px) scale(1);
         filter: blur(100px) hue-rotate(0deg);
     }
+}
+
+.__floating-card-1 {
+    position: absolute;
+    width: 250px;
+    height: 150px;
+    border: 1px solid rgba(99, 99, 99, 0.5);
+    background-color: rgba(0, 0, 0, 0.218);
+    border-radius: 16px;
+    bottom: 100px;
+    left: 20%;
+    z-index: 2;
+}
+
+.__floating-relative {
+    position: relative;
+}
+
+.__floating-card-1 .__floating-relative .floating-body {
+    width: 50%;
+    height: 90%;
+    border: 1px solid rgba(99, 99, 99, 0.5);
+    background-color: rgba(0, 0, 0, 0.218);
 }
