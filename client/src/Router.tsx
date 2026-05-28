@@ -6,6 +6,7 @@ import { useAuth } from "./providers/AuthProvider";
 import FormsPage from "./pages/FormsPage";
 import LiveForm from "./pages/LiveForm";
 import SubmissionsPage from "./pages/SubmissionsPage";
+import LandingPage from "./pages/LandingPage";
 
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
     const { token } = useAuth();
@@ -25,12 +26,13 @@ const Router = () => {
     return (
         <Routes>
             {/* Public Routes */}
+            <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/c" element={<Navigate to="/" replace />} />
             <Route path="/f/:slug" element={<LiveForm />} />
 
             {/* Private Routes */}
-            <Route path="/" element={
+            <Route path="/new" element={
                 <PrivateRoute>
                     <Home />
                 </PrivateRoute>
