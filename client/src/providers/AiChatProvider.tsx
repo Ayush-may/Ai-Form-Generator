@@ -34,7 +34,7 @@ const AiChatProvider = ({ children }: ChildrenType) => {
     const [token, setToken] = useState<string | null>(null);
     const [chatsCache, setChatsCache] = useState<{ [key: string]: any[] }>({});
     const [firstMessage, setFirstMessage] = useState<string | null>(null);
-    const [sidebarCovnersations, setSidebarConversations] = useState([])
+    const [sidebarCovnersations, setSidebarConversations] = useState<any[]>([])
 
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
