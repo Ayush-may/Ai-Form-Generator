@@ -6,7 +6,10 @@ import { BiPaperclip, BiPen } from "react-icons/bi";
 import { CgFormatBold } from "react-icons/cg";
 import { FaRegWindowMaximize } from "react-icons/fa";
 import { PiSunLight } from "react-icons/pi";
+import { BsViewList } from "react-icons/bs";
 import http from "../libs/http";
+import { useAiChat } from "../providers/AiChatProvider";
+import squareLogoSvg from "../assets/squareLogo.svg"
 
 type SidebarProp = {
     toggleSide: boolean,
@@ -16,12 +19,13 @@ type SidebarProp = {
 const Sidebar = ({ toggleSide, setToggleSide }: SidebarProp) => {
     const [open, setOpen] = useState(false);
     const { pathname } = useLocation();
-    const [messages, setMessages] = useState<{
-        id: string,
-        content: string,
-        createdAt: Date,
-        updatedAt: Date,
-    }[]>([]);
+    // const [messages, setMessages] = useState<{
+    //     id: string,
+    //     content: string,
+    //     createdAt: Date,
+    //     updatedAt: Date,
+    // }[]>([]);
+    const { sidebarCovnersations: messages } = useAiChat();
 
     const navigate = useNavigate();
     const params: { id?: string } = useParams();
@@ -46,14 +50,13 @@ const Sidebar = ({ toggleSide, setToggleSide }: SidebarProp) => {
     }, [])
 
 
-    useEffect(() => {
-        const fetchConversations = async () => {
-            const res = await http.get("/conversations/user");
-            console.log(res.data);
-            setMessages(res.data);
-        }
-        fetchConversations();
-    }, [])
+    // useEffect(() => {
+    //     const fetchConversations = async () => {
+    //         const res = await http.get("/conversations/user");
+    //         setMessages(res.data);
+    //     }
+    //     fetchConversations();
+    // }, [])
 
     const handleThemeMode = () => {
         const isDark = document.documentElement.classList.toggle("dark")
@@ -67,6 +70,8 @@ const Sidebar = ({ toggleSide, setToggleSide }: SidebarProp) => {
             <div className='sidebar left-sidebar'>
 
                 <div className="side-header">
+                    <img src={squareLogoSvg} className="side-header-img" alt="ai form generator logo" width={30} height={30} />
+
                     <FaRegWindowMaximize className="side-header-icon" size={30}
                         onClick={() => setToggleSide(prev => !prev)} />
                 </div>
@@ -86,29 +91,35 @@ const Sidebar = ({ toggleSide, setToggleSide }: SidebarProp) => {
                                 {printValue("Forms")}
                             </Link>
                         </li>
-                        {/* <li>
-                            <Link to={"/submissions"} className={getActiveClass(pathname === "/submission")} >
-                                <CgFormatBold className="icon" />
+                        <li>
+                            <Link to={"/submissions"} className={getActiveClass(pathname.startsWith("/submissions"))} >
+                                <BsViewList className="icon" />
                                 {printValue("Submissions")}
                             </Link>
-                        </li> */}
+                        </li>
                         {
                             toggleSide &&
                             <li>
                                 <div className="__sidebar-converstaion-container" >
                                     <p className="__sidebar-converstaion-title" >Chats</p>
-                                    <ul className="__sidebar-conversation-lists"  >
-                                        {
-                                            messages.map((message) => (
-                                                <li key={message.id}
-                                                    className={`${id === message.id ? 'active' : ''}`}
-                                                    onClick={() => {
-                                                        navigate(`/c/${message.id}`)
-                                                    }}
-                                                >{message.content}</li>
-                                            ))
-                                        }
-                                    </ul>
+                                    {
+                                        (() => {
+                                            if (!messages.length) return <p className="__sidebar-no-conversation">No conversation found</p>
+
+                                            return <ul className="__sidebar-conversation-lists">
+                                                {
+                                                    messages.map((message) => (
+                                                        <li key={message.id}
+                                                            className={`${id === message.id ? 'active' : ''}`}
+                                                            onClick={() => {
+                                                                navigate(`/c/${message.id}`)
+                                                            }}
+                                                        >{message.content}</li>
+                                                    ))
+                                                }
+                                            </ul>
+                                        })()
+                                    }
                                 </div>
                             </li>
                         }

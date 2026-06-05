@@ -38,4 +38,12 @@ export class FormController {
     return this.formService.postFormSubmission(body);
   }
 
+  @Get("submissions/:formId")
+  @UseGuards(AuthGuardGuard)
+  async getFormSubmissions(
+    @Param("formId") formId: string,
+    @Req() req: any
+  ) {
+    return this.formService.getFormSubmissions(req?.userId, formId);
+  }
 }

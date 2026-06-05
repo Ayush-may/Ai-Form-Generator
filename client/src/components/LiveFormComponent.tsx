@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 // import "../styles/Form.css"
 import { useAiChat } from "../providers/AiChatProvider"
 import http from '../libs/http';
@@ -10,6 +10,7 @@ const LiveFormComponent = ({ form, formId }: {
     formId: string
 }) => {
 
+
     const parsedFormSchema = useMemo(() => {
         if (!form || !form?.schema.form) return null;
         return form.schema;
@@ -18,6 +19,10 @@ const LiveFormComponent = ({ form, formId }: {
     if (!parsedFormSchema) {
         return <p>No Data.</p>
     }
+
+    useEffect(() => {
+        document.title = (parsedFormSchema?.title + " | Ai Form Generator") || "Form Generator";
+    }, [parsedFormSchema]);
 
     const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();

@@ -6,13 +6,15 @@ import {
     FiEdit2,
     FiCopy,
     FiTrash2,
-    FiBarChart2
+    FiBarChart2,
+    FiDatabase
 } from "react-icons/fi";
 import "../styles/FormsComponent.css";
 import http from "../libs/http";
 import { toast } from "sonner";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BsViewList } from "react-icons/bs";
+import Breadcrumb from "./Breadcrumb";
 
 const mockForms = [
     {
@@ -42,8 +44,9 @@ const mockForms = [
 ];
 
 function FormsComponent() {
+    const navigate = useNavigate();
     const [search, setSearch] = useState("");
-    const [forms, setForms] = useState<any[]>([])
+    const [forms, setForms] = useState<any[]>([]);
     const [openMenu, setOpenMenu] = useState<number | null>(null);
 
     const filteredForms = useMemo(() => {
@@ -84,8 +87,15 @@ function FormsComponent() {
                         onChange={(e) => setSearch(e.target.value)}
                     />
                 </div>
-            </div>
 
+            </div>
+            <Breadcrumb
+                items={[
+                    { label: "Home", href: "/" },
+                    { label: "My Forms", href: "/forms" },
+                    { label: "Edit Form" }
+                ]}
+            />
             <div className="forms-grid">
                 {filteredForms.map((form) => (
                     <div key={form.id} className="form-card">
@@ -113,15 +123,15 @@ function FormsComponent() {
                                             Edit Form
                                         </button>
 
-                                        <button>
+                                        <button onClick={() => navigate(`/submissions?formId=${form.id}`)}>
                                             <FiBarChart2 />
                                             View Responses
                                         </button>
 
-                                        <button>
+                                        {/* <button>
                                             <FiCopy />
                                             Duplicate
-                                        </button>
+                                        </button> */}
 
                                         <button className="delete-option">
                                             <FiTrash2 />
@@ -164,8 +174,8 @@ function FormsComponent() {
                             </span>
                             <button
                                 className="live-btn"
-                                title="Copy Live Form Link"
-                                onClick={() => { }}
+                                title="View Submissions"
+                                onClick={() => navigate(`/submissions?formId=${form.id}`)}
                             >
                                 <BsViewList size={14} /> Submission
                             </button>
@@ -175,8 +185,12 @@ function FormsComponent() {
             </div>
 
             {filteredForms.length === 0 && (
-                <div className="empty-state">
-                    No forms found.
+                <div className="empty-submissions" style={{ gridColumn: "1 / -1" }}>
+                    <div className="empty-icon">
+                        <FiDatabase />
+                    </div>
+                    <h3>No Forms Found</h3>
+                    <p>Create a form first to see and manage its submissions.</p>
                 </div>
             )}
         </div>

@@ -55,6 +55,10 @@
     position: relative;
 }
 
+.side-header-image {
+    cursor: pointer;
+}
+
 .side-header-icon {
     position: absolute;
     right: 10px;
@@ -69,6 +73,17 @@
     padding: 5px;
     transition: all ease 200ms;
     border-radius: 10px;
+}
+
+.sidebar.open .side-header {
+    margin-top: 10px;
+    margin-left: 10px;
+    justify-content: space-between;
+    padding: 10px 16px;
+}
+
+.sidebar.open .side-header-icon {
+    position: static;
 }
 
 .side-header-icon:hover {
@@ -222,6 +237,14 @@
     margin: 10px 0;
     font-size: 14px;
     color: var(--sidebar-font);
+}
+
+.__sidebar-no-conversation {
+    font-size: 13px;
+    color: var(--sidebar-font);
+    opacity: 0.65;
+    font-style: italic;
+    padding: 8px 0;
 }
 
 .__sidebar-conversation-lists {

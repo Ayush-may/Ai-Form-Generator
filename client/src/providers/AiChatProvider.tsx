@@ -2,7 +2,7 @@
 
 import { useChat } from "@ai-sdk/react"
 import { DefaultChatTransport } from "ai"
-import React, { createContext, useEffect, useState } from "react"
+import React, { createContext, useCallback, useEffect, useState } from "react"
 import type { FormType } from "../types/Form"
 import http from "../libs/http"
 
@@ -14,10 +14,12 @@ type ValueType = {
     // states
     previewForm: FormType | null
     firstMessage: string | null
+    sidebarCovnersations: any[]
 
     // setter
     setPreviewForm: React.Dispatch<React.SetStateAction<FormType | null>>
     setFirstMessage: React.Dispatch<React.SetStateAction<string | null>>
+    setSidebarConversations: React.Dispatch<React.SetStateAction<any[]>>
 
     // helper functions
     fetchConversationByIdHistory: (conversationId: string) => Promise<void>
@@ -32,6 +34,7 @@ const AiChatProvider = ({ children }: ChildrenType) => {
     const [token, setToken] = useState<string | null>(null);
     const [chatsCache, setChatsCache] = useState<{ [key: string]: any[] }>({});
     const [firstMessage, setFirstMessage] = useState<string | null>(null);
+    const [sidebarCovnersations, setSidebarConversations] = useState([])
 
     useEffect(() => {
         const storedToken = localStorage.getItem("token");
@@ -53,17 +56,6 @@ const AiChatProvider = ({ children }: ChildrenType) => {
         })
     })
 
-    // useEffect(() => {
-    //     const last = messages[messages.length - 1];
-    //     const textPart = last?.parts?.find(p => p.type === "text");
-
-    //     if (textPart?.text) {
-    //         console.log("TEXT:", textPart?.text);
-    //     } else {
-    //         console.log("NOTEXT:", last?.parts);
-    //     }
-    // }, [messages]);
-
     const fetchConversationByIdHistory = React.useCallback(async (conversationId: string) => {
         setMessages([]);
 
@@ -79,8 +71,6 @@ const AiChatProvider = ({ children }: ChildrenType) => {
                 }
             })
 
-            // console.log({ data })
-
             const formattedMessages = data
                 .filter((m: any) => m.content || m.formSnapshot)
                 .map((m: any) => ({
@@ -92,8 +82,8 @@ const AiChatProvider = ({ children }: ChildrenType) => {
                             ? JSON.parse(m.formSnapshot)
                             : m.formSnapshot || null,
                 }));
-                
-            console.log({ formattedMessages })
+
+            // console.log({ formattedMessages })
 
             setChatsCache(prev => ({ ...prev, [conversationId]: formattedMessages }));
             setMessages(formattedMessages);
@@ -102,6 +92,15 @@ const AiChatProvider = ({ children }: ChildrenType) => {
         }
     }, [token, chatsCache, setMessages]);
 
+
+    // sidebar conversations list
+    useEffect(() => {
+        if (!token) return
+        (async () => {
+            const res = await http.get("/conversations/user");
+            setSidebarConversations(res.data)
+        })()
+    }, [token]);
 
     const chatValue = React.useMemo(() => ({
         messages,
@@ -113,6 +112,8 @@ const AiChatProvider = ({ children }: ChildrenType) => {
         setFirstMessage,
         setPreviewForm,
         fetchConversationByIdHistory,
+        sidebarCovnersations,
+        setSidebarConversations,
         ...chatRest
     }), [
         messages,
@@ -121,6 +122,7 @@ const AiChatProvider = ({ children }: ChildrenType) => {
         setMessages,
         previewForm,
         firstMessage,
+        sidebarCovnersations,
         setFirstMessage,
         setPreviewForm,
         fetchConversationByIdHistory,
