@@ -7,7 +7,7 @@ import { useAiChat } from '../providers/AiChatProvider'
 import { Group, Panel, Separator } from "react-resizable-panels"
 import PreviewForm from './PreviewForm'
 import http from '../libs/http'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 
 const message = `Sure! I've created a basic Gym Membership Form for you.
 
@@ -76,6 +76,7 @@ const ChatComponent = () => {
 
     const [inputText, setInputText] = useState("")
     const navigate = useNavigate();
+    const location = useLocation();
     const textAreaRef = useRef<HTMLTextAreaElement>(null)
     const chatComponentRef = useRef<HTMLDivElement>(null)
 
@@ -95,9 +96,26 @@ const ChatComponent = () => {
 
     useEffect(() => {
         setMessages([]); // Clear global context for new chats
-    }, []);
 
+        const initialPrompt = location.state?.initialPrompt;
+        if (initialPrompt) {
+            // Clear location state so it doesn't trigger again on back navigation
+            window.history.replaceState({}, document.title);
 
+            const triggerSend = async () => {
+                try {
+                    const text = initialPrompt.trim();
+                    const res = await http.post("/conversations", { message: text });
+                    const conversation: { id: string, content: string } = res.data.conversation;
+                    setFirstMessage(text);
+                    navigate(`/c/${conversation.id}`, { replace: true });
+                } catch (error) {
+                    console.error("Error sending message:", error);
+                }
+            };
+            triggerSend();
+        }
+    }, [location.state, setMessages, setFirstMessage, navigate]);
 
     const checkAndSend = async () => {
         if (inputText.trim()) {

@@ -265,8 +265,8 @@ const SubmissionsComponent = () => {
                         <div className="empty-icon">
                             <FiDatabase />
                         </div>
-                        <h3>No Forms Found</h3>
-                        <p>Create a form first to see and manage its submissions.</p>
+                        <h3>No Submissions Dashboard Data</h3>
+                        <p>You need to create a form first before you can view submissions.</p>
                     </div>
                 )}
             </div>

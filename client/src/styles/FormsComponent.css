@@ -189,6 +189,36 @@
     color: #9ca3af;
 }
 
+.empty-submissions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 48px;
+    color: #9ca3af;
+    margin-bottom: 16px;
+}
+
+.empty-submissions h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--sidebar-active-font);
+    margin-bottom: 8px;
+}
+
+.empty-submissions p {
+    font-size: 14px;
+    color: #9ca3af;
+}
+
 @keyframes fadeMenu {
     from {
         opacity: 0;

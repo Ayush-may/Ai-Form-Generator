@@ -102,18 +102,24 @@ const Sidebar = ({ toggleSide, setToggleSide }: SidebarProp) => {
                             <li>
                                 <div className="__sidebar-converstaion-container" >
                                     <p className="__sidebar-converstaion-title" >Chats</p>
-                                    <ul className="__sidebar-conversation-lists"  >
-                                        {
-                                            messages.map((message) => (
-                                                <li key={message.id}
-                                                    className={`${id === message.id ? 'active' : ''}`}
-                                                    onClick={() => {
-                                                        navigate(`/c/${message.id}`)
-                                                    }}
-                                                >{message.content}</li>
-                                            ))
-                                        }
-                                    </ul>
+                                    {
+                                        (() => {
+                                            if (!messages.length) return <p className="__sidebar-no-conversation">No conversation found</p>
+
+                                            return <ul className="__sidebar-conversation-lists">
+                                                {
+                                                    messages.map((message) => (
+                                                        <li key={message.id}
+                                                            className={`${id === message.id ? 'active' : ''}`}
+                                                            onClick={() => {
+                                                                navigate(`/c/${message.id}`)
+                                                            }}
+                                                        >{message.content}</li>
+                                                    ))
+                                                }
+                                            </ul>
+                                        })()
+                                    }
                                 </div>
                             </li>
                         }

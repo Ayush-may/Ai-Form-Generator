@@ -6,7 +6,8 @@ import {
     FiEdit2,
     FiCopy,
     FiTrash2,
-    FiBarChart2
+    FiBarChart2,
+    FiDatabase
 } from "react-icons/fi";
 import "../styles/FormsComponent.css";
 import http from "../libs/http";
@@ -184,8 +185,12 @@ function FormsComponent() {
             </div>
 
             {filteredForms.length === 0 && (
-                <div className="empty-state">
-                    No forms found.
+                <div className="empty-submissions" style={{ gridColumn: "1 / -1" }}>
+                    <div className="empty-icon">
+                        <FiDatabase />
+                    </div>
+                    <h3>No Forms Found</h3>
+                    <p>Create a form first to see and manage its submissions.</p>
                 </div>
             )}
         </div>

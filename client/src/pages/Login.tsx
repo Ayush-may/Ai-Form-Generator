@@ -85,7 +85,13 @@ const Login = () => {
                 localStorage.setItem("token", res.data.token);
                 toast.success("Logged in!");
 
-                navigate("/");
+                const pendingPrompt = sessionStorage.getItem("pendingPrompt");
+                if (pendingPrompt) {
+                    sessionStorage.removeItem("pendingPrompt");
+                    navigate("/new", { state: { initialPrompt: pendingPrompt } });
+                } else {
+                    navigate("/");
+                }
             }
         } catch (err: any) {
             if (!isRegister && err.response?.status === 401 && err.response?.data?.message?.toLowerCase().includes("verify")) {
@@ -103,6 +109,17 @@ const Login = () => {
         <div className='__login_page'>
             <div className='container'>
                 <div className='register'>
+
+                    {/* Left Sidebar Image Section */}
+                    {/* <section className="login-sidebar-section">
+                        <div className="login-sidebar-image-container">
+                            <img src="https://images.unsplash.com/photo-1583339824000-5afecfd41835" alt="ChatForm Banner" />
+                            <div className="login-sidebar-overlay">
+                                <h3>ChatForm.ai</h3>
+                                <p>Build production-ready interactive forms simply by chatting. Powered by generative AI.</p>
+                            </div>
+                        </div>
+                    </section> */}
 
                     <section className='right_section'>
                         <div className='login_component'>

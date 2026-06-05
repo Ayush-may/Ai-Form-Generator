@@ -42,7 +42,13 @@ const AuthProvider = ({ children }: { children: any }) => {
 
     useEffect(() => {
         if (token && location.pathname === "/login") {
-            navigate("/", { replace: true });
+            const pendingPrompt = sessionStorage.getItem("pendingPrompt");
+            if (pendingPrompt) {
+                sessionStorage.removeItem("pendingPrompt");
+                navigate("/new", { state: { initialPrompt: pendingPrompt }, replace: true });
+            } else {
+                navigate("/", { replace: true });
+            }
         }
     }, [token, location.pathname, navigate]);
 
