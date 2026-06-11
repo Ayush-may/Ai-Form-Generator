@@ -40,7 +40,7 @@ function Home() {
 
             <div className='right-section'>
                 <div className='content-container'>
-                    <ChatComponent />
+                    <ChatComponent setToggleSide={setToggleSide} />
                 </div>
 
                 {toggleSide && <div className='overlay'></div>}

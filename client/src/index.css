@@ -21,6 +21,7 @@
   --sidebar-font: #4b5563;
   --sidebar-active-font: #1f2937;
   --sidebar-active-link: #d1d5db;
+  --sidebar-logo-filter: invert(0.85);
 
   /* buttons / accent */
   --primary-color: #4b5563;
@@ -68,6 +69,7 @@
   --sidebar-active-link: #2f2f2f88;
   --sidebar-close-btn: #484848;
   --sidebar-close-btn--hover: #48484849;
+  --sidebar-logo-filter: none;
 
   /* buttons / accent */
   --primary-color: #3b82f6;

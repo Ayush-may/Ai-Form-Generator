@@ -256,8 +256,8 @@ const LandingPage = () => {
             <footer className="landing-footer">
                 <div className="footer-top">
                     <div className="footer-brand">
-                        <span className="brand-logo"><FiZap /></span>
-                        <span>Formiq.ai</span>
+                        {/* <span className="brand-logo"><FiZap /></span> */}
+                        <span>ChatForm</span>
                     </div>
                     <div className="footer-links">
                         <a href="#features">Features</a>

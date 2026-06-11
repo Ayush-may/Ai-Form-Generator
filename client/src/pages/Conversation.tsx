@@ -38,7 +38,7 @@ const Conversation = () => {
             <div className='right-section'>
                 <div className='content-container'>
                     {/* <ChatComponent /> */}
-                    <ConversationComponent />
+                    <ConversationComponent setToggleSide={setToggleSide} />
                 </div>
                 {toggleSide && <div className='overlay'></div>}
             </div>

@@ -153,7 +153,7 @@ form input[type="password"] {
 form input[type="text"]:focus,
 form input[type="email"]:focus,
 form input[type="password"]:focus {
-    border-color: #ffffff;
+    /* border-color: #ffffff; */
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
     background-color: rgba(255, 255, 255, 0.05);
 }

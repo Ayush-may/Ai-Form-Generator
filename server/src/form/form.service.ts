@@ -21,6 +21,9 @@ export class FormService {
     async getForm(userId: any) {
         const forms = await this.prisma.form.findMany({
             where: { userId },
+            orderBy: {
+                createdAt: "desc",
+            },
             select: {
                 id: true,
                 name: true,

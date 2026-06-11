@@ -88,9 +88,9 @@ const SaveFormModal = ({
 
             alert("form is saved!")
 
-            // onSave?.(response.data.form);
+            onSave?.(response.data.form);
 
-            // handleClose();
+            handleClose();
         } catch (error) {
             console.error(error);
             alert("Failed to save form.");
