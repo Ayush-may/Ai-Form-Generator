@@ -5,10 +5,15 @@ import { useAiChat } from "../providers/AiChatProvider";
 import { useEffect, useRef, useState, useDeferredValue } from "react";
 import { VscLoading } from "react-icons/vsc";
 import { BiSend } from "react-icons/bi";
+import { FiMenu } from "react-icons/fi";
 import PreviewForm from "./PreviewForm";
 import { useAuth } from "../providers/AuthProvider";
 
-const ConversationComponent = () => {
+type ConversationComponentProps = {
+    setToggleSide?: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const ConversationComponent = ({ setToggleSide }: ConversationComponentProps) => {
     const params = useParams();
     const id = params.id;
     const { token } = useAuth();
@@ -19,6 +24,7 @@ const ConversationComponent = () => {
         status,
         previewForm,
         firstMessage,
+        sidebarCovnersations,
 
         // setter
         setPreviewForm,
@@ -32,6 +38,8 @@ const ConversationComponent = () => {
     } = useAiChat();
 
     const [inputText, setInputText] = useState("");
+    const currentConversation = sidebarCovnersations?.find((c) => c.id === id);
+    const conversationTitle = currentConversation?.content || "Conversation";
     const deferredMessages = useDeferredValue(messages);
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const chatComponentRef = useRef<HTMLDivElement>(null);
@@ -128,6 +136,12 @@ const ConversationComponent = () => {
         <Group className='__chat-multi-panel' orientation='horizontal' >
 
             <Panel className='__chat-compo'  >
+                <div className="__mobile-header">
+                    <button className="__sidebar-toggle-btn" onClick={() => setToggleSide?.(true)}>
+                        <FiMenu size={20} />
+                    </button>
+                    <span className="__mobile-header-title">{conversationTitle}</span>
+                </div>
                 <div className='__chat-area' ref={scrollAreaRef} >
                     <MessageList messages={deferredMessages} status={status} />
                 </div>

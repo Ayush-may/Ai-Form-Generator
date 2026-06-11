@@ -65,7 +65,7 @@
 }
 
 .__form-input:focus {
-    border-color: #4b7cff;
+    /* border-color: #4b7cff; */
 }
 
 /* .__form-input:invalid {

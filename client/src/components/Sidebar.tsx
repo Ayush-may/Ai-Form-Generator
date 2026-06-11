@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../styles/sidebar.css"
 import { HiHome } from "react-icons/hi";
-import { BiPaperclip, BiPen } from "react-icons/bi";
+import { BiHome, BiPaperclip, BiPen, BiLogOut } from "react-icons/bi";
 import { CgFormatBold } from "react-icons/cg";
 import { FaRegWindowMaximize } from "react-icons/fa";
 import { PiSunLight } from "react-icons/pi";
@@ -10,6 +10,7 @@ import { BsViewList } from "react-icons/bs";
 import http from "../libs/http";
 import { useAiChat } from "../providers/AiChatProvider";
 import squareLogoSvg from "../assets/squareLogo.svg"
+import { useAuth } from "../providers/AuthProvider";
 
 type SidebarProp = {
     toggleSide: boolean,
@@ -17,6 +18,7 @@ type SidebarProp = {
 }
 
 const Sidebar = ({ toggleSide, setToggleSide }: SidebarProp) => {
+    const { logout } = useAuth();
     const [open, setOpen] = useState(false);
     const { pathname } = useLocation();
     // const [messages, setMessages] = useState<{
@@ -70,7 +72,9 @@ const Sidebar = ({ toggleSide, setToggleSide }: SidebarProp) => {
             <div className='sidebar left-sidebar'>
 
                 <div className="side-header">
-                    <img src={squareLogoSvg} className="side-header-img" alt="ai form generator logo" width={30} height={30} />
+                    {toggleSide && (
+                        <img src={squareLogoSvg} className="side-header-img" alt="ai form generator logo" width={30} height={30} />
+                    )}
 
                     <FaRegWindowMaximize className="side-header-icon" size={30}
                         onClick={() => setToggleSide(prev => !prev)} />
@@ -81,6 +85,12 @@ const Sidebar = ({ toggleSide, setToggleSide }: SidebarProp) => {
                     <ul>
                         <li>
                             <Link to={"/"} className={getActiveClass(pathname === "/")} >
+                                <BiHome size={16} className="icon" />
+                                {printValue("Home")}
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to={"/new"} className={getActiveClass(pathname === "/new")} >
                                 <BiPen size={16} className="icon" />
                                 {printValue("Generate")}
                             </Link>
@@ -128,6 +138,15 @@ const Sidebar = ({ toggleSide, setToggleSide }: SidebarProp) => {
                             <div className="__theme" onClick={handleThemeMode} >
                                 <PiSunLight className="icon" />
                                 {printValue("Toggle theme")}
+                            </div>
+                        </li>
+                        <li>
+                            <div className="__logout" onClick={() => {
+                                logout();
+                                navigate("/login");
+                            }} >
+                                <BiLogOut className="icon" />
+                                {printValue("Logout")}
                             </div>
                         </li>
                     </ul>

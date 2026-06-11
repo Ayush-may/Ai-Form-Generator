@@ -118,10 +118,10 @@ function FormsComponent() {
                                         className="dropdown-menu"
                                         onClick={(e) => e.stopPropagation()}
                                     >
-                                        <button>
+                                        {/* <button>
                                             <FiEdit2 />
                                             Edit Form
-                                        </button>
+                                        </button> */}
 
                                         <button onClick={() => navigate(`/submissions?formId=${form.id}`)}>
                                             <FiBarChart2 />

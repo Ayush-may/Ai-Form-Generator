@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useRef, useState } from 'react'
 import "../styles/ChatComponent.css"
 import { BiSend } from 'react-icons/bi'
+import { FiMenu } from 'react-icons/fi'
 import MessageList from './MessageList'
 import { VscLoading } from 'react-icons/vsc'
 import { useAiChat } from '../providers/AiChatProvider'
@@ -72,7 +73,11 @@ type FormSchema = {
     }[]
 }
 
-const ChatComponent = () => {
+type ChatComponentProps = {
+    setToggleSide?: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const ChatComponent = ({ setToggleSide }: ChatComponentProps) => {
 
     const [inputText, setInputText] = useState("")
     const navigate = useNavigate();
@@ -147,6 +152,12 @@ const ChatComponent = () => {
         <Group className='__chat-multi-panel' orientation='horizontal' >
 
             <Panel className='__chat-compo'  >
+                <div className="__mobile-header">
+                    <button className="__sidebar-toggle-btn" onClick={() => setToggleSide?.(true)}>
+                        <FiMenu size={20} />
+                    </button>
+                    <span className="__mobile-header-title">New Chat</span>
+                </div>
                 {/* <div className='__chat-area' >
                     <MessageList messages={messages} status={status} />
                 </div> */}

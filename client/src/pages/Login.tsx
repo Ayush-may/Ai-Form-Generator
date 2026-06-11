@@ -90,7 +90,7 @@ const Login = () => {
                     sessionStorage.removeItem("pendingPrompt");
                     navigate("/new", { state: { initialPrompt: pendingPrompt } });
                 } else {
-                    navigate("/");
+                    navigate("/new");
                 }
             }
         } catch (err: any) {
